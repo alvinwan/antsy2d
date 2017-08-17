@@ -18,6 +18,7 @@ def main():
     images = load_pointclouds(kitti_dir)
     with open('data/example.json') as f:
         data = json.load(f)
+        data['projectedURLs'] = data.get('projectedURLs', [])
     for image in images:
         filename = '_'.join((image['date'], image['drive'], image['name']))
         new_lidar_path = os.path.join(projected_dir, filename + '.npy')
@@ -25,11 +26,14 @@ def main():
         annotation_path = os.path.join(annotation_dir, filename + '.png')
         shutil.copy(image['path'], new_image_path)
         cloud = image['cloud'].reshape((-1, 3))
-        np.save(new_lidar_path, image['calib'].velo2img(cloud, 2))
+        projected_cloud = image['calib'].velo2img(cloud, 2)
+        np.save(new_lidar_path, np.vstack((cloud, projected_cloud)))
         if new_image_path not in data['imageURLs']:
             data['imageURLs'].append(new_image_path)
         if annotation_path not in data['annotationURLs']:
             data['annotationURLs'].append(annotation_path)
+        if new_lidar_path not in data['projectedURLs']:
+            data['projectedURLs'].append(new_lidar_path)
     with open('data/example.json', 'w') as f:
         json.dump(data, f)
 
