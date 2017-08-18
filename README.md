@@ -6,15 +6,22 @@ in-browser point cloud annotation tool for instance-level segmentation using 2d 
  * Written in vanilla Javascript, with require.js dependency (packaged).
  * Pure client-side implementation of image segmentation.
  * *Fork introduces ability to label point cloud using 2d projection*
+ * Includes support for KITTI dataset
 
 A browser must support HTML canvas to use this tool.
 
-Importing data
---------------
+# Importing Data
 
-Prepare a JSON file that looks like the following. The required fields are
-`labels` and `imageURLs`. The `annotationURLs` are for existing data and can
-be omitted. Place the JSON file inside the `data/` directory.
+You can use the automated script if you are using the KITTI dataset.
+
+```
+python to_antsy.py --kitti=path/to/KITTI
+```
+
+Otherwise, prepare a JSON file that looks like the following. The 
+required fields are `labels` and `imageURLs`. The `annotationURLs` are 
+for existing data and can be omitted. Place the JSON file inside the 
+`data/` directory.
 
     {
       "labels": [
@@ -33,7 +40,13 @@ be omitted. Place the JSON file inside the `data/` directory.
     }
 
 Then edit `main.js` to point to this JSON file. Open a Web browser and visit
-`index.html`.
+`index.html`. Once you're done annotating, click "save" to export. Drag
+the image into `data/annotations`. Once you're done, convert this data
+into labelled point clouds:
+
+```
+python from_antsy.py
+```
 
 Citation
 --------

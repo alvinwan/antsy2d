@@ -1,11 +1,18 @@
 """Converts labelled 2d projection to labelled point cloud."""
 
+import argparse
 import cv2
 import json
 import numpy as np
+import os
 
 
 def main():
+    parser = argparse.ArgumentParser(description='Converter')
+    parser.add_argument('--kitti', type=str,
+                        help='Path to KITTI root directory, use if importing KITTI data')
+    args = parser.parse_args()
+
     with open('data/example.json') as f:
         data = json.load(f)
     for imageURL, annotationURL, projectedURL in zip(
@@ -24,7 +31,7 @@ def main():
                 label = 0
             labelled_cloud.append(np.hstack((point[:3], label)))
         new_cloud = np.vstack(labelled_cloud)
-        np.save(projectedURL.replace('projected/', 'labelled/'), new_cloud)
+        np.save(os.path.join(args.kitti, imageURL.replace('__', '/')), new_cloud)
 
 
 if __name__ == '__main__':

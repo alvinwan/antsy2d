@@ -5,22 +5,31 @@ import numpy as np
 import glob
 import shutil
 import json
+import argparse
 
 from thirdparty.calib import Calib
 
 
+images_dir = 'data/images'
+projected_dir = 'data/projected'
+annotation_dir = 'data/annotations'
+
+
 def main():
-    images_dir = 'data/images'
-    projected_dir = 'data/projected'
-    annotation_dir = 'data/annotations'
-    kitti_dir = '../kitti'
-    # kitti_dir = '/rscratch/bichen/KITTI_raw'
-    images = load_pointclouds(kitti_dir)
+    parser = argparse.ArgumentParser(description='Converter')
+    parser.add_argument('--kitti', type=str, help='Path to KITTI root directory, use if importing KITTI data')
+    args = parser.parse_args()
+
+    if args.kitti:
+        images = load_kitti_pointclouds(args.kitti)
+    else:
+        raise NotImplementedError()
+
     with open('data/example.json') as f:
         data = json.load(f)
         data['projectedURLs'] = data.get('projectedURLs', [])
     for image in images:
-        filename = '_'.join((image['date'], image['drive'], image['name']))
+        filename = image['filename']
         new_lidar_path = os.path.join(projected_dir, filename + '.npy')
         new_image_path = os.path.join(images_dir, filename + '.png')
         annotation_path = os.path.join(annotation_dir, filename + '.png')
@@ -38,7 +47,7 @@ def main():
         json.dump(data, f)
 
 
-def load_pointclouds(kitti_dir):
+def load_kitti_pointclouds(kitti_dir):
     images = []
     for date in glob.iglob(os.path.join(kitti_dir, '2011_*')):
         calib = Calib(date)
@@ -49,12 +58,13 @@ def load_pointclouds(kitti_dir):
                 image_path = os.path.join(image_dir, image.replace('.npy', '.png'))
                 cloud_path = os.path.join(lidar_dir, image)
                 images.append({
-                    'name': image.replace('.npy', ''),
-                    'date': os.path.basename(date),
-                    'drive': os.path.basename(drive),
                     'path': image_path,
                     'cloud': np.load(cloud_path)[:, :, :3],
-                    'calib': calib
+                    'calib': calib,
+                    'filename': '__'.join((
+                        os.path.basename(date),
+                        os.path.basename(drive),
+                        image.replace('.npy', '')))
                 })
     return images
 
