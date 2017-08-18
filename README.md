@@ -1,7 +1,6 @@
-JS Segment Annotator
-====================
+# Antsy2d
 
-Javascript image annotation tool based on image segmentation.
+in-browser point cloud annotation tool for instance-level segmentation using 2d projection. Original written by [kyamagu](https://github.com/kyamagu/js-segment-annotator) with lightweight 3d point cloud adaptations by [Alvin Wan](http://alvinwan.com).
 
  * Label image regions with mouse.
  * Written in vanilla Javascript, with require.js dependency (packaged).
@@ -9,10 +8,6 @@ Javascript image annotation tool based on image segmentation.
  * *Fork introduces ability to label point cloud using 2d projection*
 
 A browser must support HTML canvas to use this tool.
-
-Original written by [kyamagu](https://github.com/kyamagu/js-segment-annotator) with lightweight 3d point cloud adaptations by [Alvin Wan](http://alvinwan.com).
-
-There is an [online demo](http://kyamagu.github.io/js-segment-annotator/?view=index).
 
 Importing data
 --------------

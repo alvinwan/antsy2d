@@ -1,1 +1,15 @@
-{"labels": ["not drivable", "drivable"], "annotationURLs": ["data/annotations/test.png"], "imageURLs": ["data/images/test.png"]}
+{
+  "annotationURLs": [
+    "data/annotations/test.png"
+  ],
+  "labels": [
+    "not drivable",
+    "drivable"
+  ],
+  "imageURLs": [
+    "data/images/test.png"
+  ],
+  "projectedURLs": [
+    "data/projected/test.npy"
+  ]
+}

@@ -27,7 +27,7 @@ def main():
         shutil.copy(image['path'], new_image_path)
         cloud = image['cloud'].reshape((-1, 3))
         projected_cloud = image['calib'].velo2img(cloud, 2)
-        np.save(new_lidar_path, np.vstack((cloud, projected_cloud)))
+        np.save(new_lidar_path, np.hstack((cloud, projected_cloud)))
         if new_image_path not in data['imageURLs']:
             data['imageURLs'].append(new_image_path)
         if annotation_path not in data['annotationURLs']:
@@ -53,7 +53,7 @@ def load_pointclouds(kitti_dir):
                     'date': os.path.basename(date),
                     'drive': os.path.basename(drive),
                     'path': image_path,
-                    'cloud': np.load(cloud_path)[:,:,:3],
+                    'cloud': np.load(cloud_path)[:, :, :3],
                     'calib': calib
                 })
     return images
