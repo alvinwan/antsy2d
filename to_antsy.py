@@ -18,6 +18,7 @@ annotation_dir = 'data/annotations'
 def main():
     parser = argparse.ArgumentParser(description='Converter')
     parser.add_argument('--kitti', type=str, help='Path to KITTI root directory, use if importing KITTI data')
+    parser.add_argument('--subsample', type=int, default=10, help='Number of images to skip. Value 10 means take every 10th image and point cloud.')
     args = parser.parse_args()
 
     if args.kitti:
@@ -28,11 +29,17 @@ def main():
     with open('data/example.json') as f:
         data = json.load(f)
         data['projectedURLs'] = data.get('projectedURLs', [])
-    for image in images:
+    for i, image in enumerate(images):
+        if i % args.subsample != 0:
+            continue
         filename = image['filename']
         new_lidar_path = os.path.join(projected_dir, filename + '.npy')
         new_image_path = os.path.join(images_dir, filename + '.png')
         annotation_path = os.path.join(annotation_dir, filename + '.png')
+
+        os.makedirs(os.path.dirname(new_image_path), exist_ok=True)
+        os.makedirs(os.path.dirname(new_lidar_path), exist_ok=True)
+
         shutil.copy(image['path'], new_image_path)
         cloud = image['cloud'].reshape((-1, 3))
         projected_cloud = image['calib'].velo2img(cloud, 2)
@@ -61,7 +68,7 @@ def load_kitti_pointclouds(kitti_dir):
                     'path': image_path,
                     'cloud': np.load(cloud_path)[:, :, :3],
                     'calib': calib,
-                    'filename': '__'.join((
+                    'filename': '/'.join((
                         os.path.basename(date),
                         os.path.basename(drive),
                         image.replace('.npy', '')))
