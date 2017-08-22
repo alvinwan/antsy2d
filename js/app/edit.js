@@ -52,6 +52,8 @@ function(Layer, Annotator, util) {
     container.appendChild(document.createTextNode(" "));
     container.appendChild(nextAnchor);
     container.classList.add("edit-top-menu-block");
+    container.appendChild(document.createTextNode(" "));
+    container.appendChild(document.createTextNode(data.imageURLs[id]));
     return container;
   }
 
@@ -77,7 +79,7 @@ function(Layer, Annotator, util) {
     sidebarContainer.appendChild(sidebarSpacer);
     sidebarContainer.appendChild(sidebar);
     container.className = "edit-main-container";
-    container.appendChild(imageContainer);
+//    container.appendChild(imageContainer);
     container.appendChild(annotatorContainer);
     container.appendChild(sidebarContainer);
     return container;
